@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Covid.dao.EmpIdenDao">
+    <resultMap id="resultMap" type="Covid.model.EmpIden">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="sex" property="sex" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <result column="name" property="name"/>
+        <result column="idcard" property="idcard"/>
+        <result column="idate" property="idate"/>
+        <result column="place" property="place"/>
+        <result column="phonenum" property="phonenum"/>
+        <result column="register" property="register"/>
+        <result column="status" property="status"/>
+        <result column="depart" property="depart"/>
+    </resultMap>
+    <sql id="BaseColumn">
+        sex,name,idcard,idate,place,phonenum,register,depart
+    </sql>
+    <sql id="BaseTable">
+        emp_iden
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            <include refid="BaseTable"/>
+            (<include refid="BaseColumn"/>)
+        Values
+            (#{empiden.sex.code},#{empiden.name},#{empiden.idcard},#{empiden.idate},#{empiden.place},#{empiden.phonenum},#{empiden.register},#{empiden.depart})
+    </insert>
+    <update id="updateById">
+        UPDATE
+            <include refid="BaseTable"/>
+        <set>
+            sex = #{empiden.sex.code},name = #{empiden.name},idcard = #{empiden.idcard},idate = #{empiden.idate},place = #{empiden.idate},phonenum = #{empiden.phonenum},register = #{empiden.register},depart = #{empiden.depart}
+        </set>
+        where
+            id = #{empiden.id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM
+                   <include refid="BaseTable"/>
+        WHERE
+            id = #{id}
+    </delete>
+    <select id="selectPage" resultMap="resultMap">
+        select
+            id,
+            <include refid="BaseColumn"/>
+        from
+            <include refid="BaseTable"/>
+    </select>
+    <select id="findAll" resultType="java.lang.Long">
+        select
+            count(*)
+        from
+            <include refid="BaseTable"/>
+    </select>
+    <select id="getmonth" resultType="java.lang.String">
+        select
+            idate
+        from
+            <include refid="BaseTable"/>
+    </select>
+    <select id="getStatusEnum" resultType="Covid.model.Enum.ImpEnum" parameterType="string">
+        select
+            status
+        from
+            <include refid="BaseTable"/>
+        where
+            status = #{sname}
+    </select>
+    <select id="selectCount" resultType="java.lang.Integer" parameterType="string">
+        select
+            count(*)
+        from
+            <include refid="BaseTable"/>
+        where
+            status
+        like '%${s}%'
+        and idate
+        like '${t}%'
+    </select>
+    <select id="selectById" resultMap="resultMap">
+        SELECT
+            id,
+            <include refid="BaseColumn"/>
+        FROM
+            <include refid="BaseTable"/>
+        Where
+            id = #{id}
+    </select>
+    <select id="selectList" resultMap="resultMap">
+        select
+            id,
+            <include refid="BaseColumn"/>
+        from
+            <include refid="BaseTable"/>
+        where
+            <if test="key == 'name'">name</if>
+            <if test="key == 'place'">place</if>
+            <if test="key == 'depart'">depart</if>
+            <if test="key == 'idate'">idate</if>
+             like '%${text}%'
+    </select>
+
+</mapper>

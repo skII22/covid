@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Covid.dao.EmpIsDao">
+    <sql id="BaseTable">
+        emp_is
+    </sql>
+    <sql id="BaseColumn">
+        name,sex,phone,temp,type,place,begin,end,leaved,arrived,content,depart
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id">
+        insert into
+            <include refid="BaseTable"/>
+            (<include refid="BaseColumn"/>)
+        Values
+            (#{empis.name},#{empis.sex.code},#{empis.phone},#{empis.temp},#{empis.type},#{empis.place},#{empis.begin},#{empis.end},#{empis.leaved},#{empis.arrived},#{empis.content},#{empis.depart})
+    </insert>
+    <update id="updateById">
+        UPDATE
+            <include refid="BaseTable"/>
+        <set>
+            name = #{empis.name},
+
+            sex = #{empis.sex.code},
+            phone = #{empis.phone},
+            temp = #{empis.temp},
+            type = #{empis.type},
+            place = #{empis.place},
+            begin = #{empis.begin},
+            end = #{empis.end},
+            leaved = #{empis.leaved},
+            arrived = #{empis.leaved},
+            content = #{empis.content},
+            depart = #{empis.depart}
+        </set>
+        WHERE
+            id = #{empis.id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM
+                   <include refid="BaseTable"/>
+        WHERE
+            id = #{id}
+    </delete>
+    <resultMap id="BaseResult" type="Covid.model.EmpIs">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <result property="phone" column="phone"/>
+        <result property="temp" column="temp"/>
+        <result property="type" column="type"/>
+        <result property="place" column="place"/>
+        <result property="begin" column="begin"/>
+        <result property="end" column="end"/>
+        <result property="leaved" column="leaved"/>
+        <result property="arrived" column="arrived"/>
+        <result property="content" column="content"/>
+        <result property="depart" column="depart"/>
+    </resultMap>
+
+
+
+    <select id="selectCountRight" resultType="java.lang.Integer">
+        select
+        count(*)
+        from
+        <include refid="BaseTable"/>
+        where
+        begin
+        like
+        '${s}%'
+    </select>
+    <select id="selectPage" resultMap="BaseResult">
+        select
+            *
+        from
+            <include refid="BaseTable"/>
+
+    </select>
+    <select id="selectAll" resultType="java.lang.Long">
+        select
+            count(*)
+        from
+            <include refid="BaseTable"/>
+    </select>
+    <select id="selectById" resultMap="BaseResult">
+        SELECT
+            id,
+            <include refid="BaseColumn"/>
+        FROM
+            <include refid="BaseTable"/>
+        WHERE
+            id = #{id}
+    </select>
+    <select id="selectList" resultMap="BaseResult">
+        SELECT
+            id,
+            <include refid="BaseColumn"/>
+        FROM
+            <include refid="BaseTable"/>
+        WHERE
+            <if test="key == 'name'">name</if>
+            <if test="key == 'type'">type</if>
+            <if test="key == 'place'">place</if>
+            <if test="key == 'leaved'">leaved</if>
+            <if test="key == 'arrived'">arrived</if>
+        LIKE
+            '%${text}%'
+    </select>
+
+
+</mapper>

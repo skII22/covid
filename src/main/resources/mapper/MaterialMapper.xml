@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Covid.dao.MaterialDao">
+    <sql id="BaseTable">material_manage</sql>
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id">
+        INSERT INTO
+            <include refid="BaseTable"/>
+            (name,count,type,isImp,charge,cnum,updateTime)
+        VALUES
+            (#{material.name},#{material.count},#{material.type},#{material.isImp.code},#{material.charge},#{material.cnum},#{material.updateTime})
+    </insert>
+    <update id="updateById">
+        UPDATE
+            <include refid="BaseTable"/>
+        <set>
+            name = #{material.name},
+            count = #{material.count},
+            type = #{material.type},
+            isImp = #{material.isImp.code},
+            charge = #{material.charge},
+            cnum = #{material.cnum},
+            updateTime = #{material.updateTime}
+        </set>
+        WHERE
+            id = #{material.id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM
+                   <include refid="BaseTable"/>
+        WHERE
+            id = #{id}
+    </delete>
+    <resultMap id="BaseResult" type="Covid.model.MaterialManage">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="count" column="count"/>
+        <result property="type" column="type"/>
+        <result property="isImp" column="isImp" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <result property="charge" column="charge"/>
+        <result property="cnum" column="cnum"/>
+        <result property="updateTime" column="updateTime"/>
+    </resultMap>
+    <select id="selectList" resultMap="BaseResult">
+        select
+            *
+        from
+            <include refid="BaseTable"/>
+        where
+            isImp = 1;
+    </select>
+    <select id="selectPage" resultMap="BaseResult">
+        select
+            *
+        from
+            <include refid="BaseTable"/>
+    </select>
+    <select id="selectAll" resultType="java.lang.Long">
+        select
+            count(*)
+        from
+            <include refid="BaseTable"/>
+    </select>
+    <select id="selectById" resultMap="BaseResult">
+        SELECT
+            *
+        FROM
+            <include refid="BaseTable"/>
+        WHERE
+            id = #{id}
+    </select>
+    <select id="selectL" resultMap="BaseResult">
+        SELECT
+            *
+        FROM
+            <include refid="BaseTable"/>
+        WHERE
+            <if test="key == 'name'">name</if>
+            <if test="key == 'charge'">charge</if>
+            <if test="key == 'updateTime'">updateTime</if>
+            = #{text}
+    </select>
+</mapper>

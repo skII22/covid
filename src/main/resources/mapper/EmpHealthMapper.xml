@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Covid.dao.EmpHealthDao">
+    <resultMap id="BaseResult" type="Covid.model.EmpHealth">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sex" property="sex" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <result column="phonenum" property="phonenum"/>
+        <result property="temp" column="temp"/>
+        <result property="risk" column="risk"/>
+        <result property="health" column="health"/>
+        <result property="content" column="content"/>
+        <result property="depart" column="depart"/>
+        <result property="createTime" column="createTime"/>
+    </resultMap>
+
+    <sql id="BaseTable">emp_health</sql>
+    <sql id="BaseColumn">
+        id,name,sex,phonenum,temp,risk,health,content,depart,createTime
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT into
+            <include refid="BaseTable"/>
+            (name,sex,phonenum,temp,risk,health,content,createTime,depart)
+        Values
+
+            (#{emp.name},#{emp.sex.code},#{emp.phonenum},#{emp.temp},#{emp.risk},#{emp.health},#{emp.content},#{emp.createTime},#{emp.depart})
+
+    </insert>
+    <update id="updateById">
+        update
+            <include refid="BaseTable"/>
+        <set>
+            name =#{emp.name},
+            sex = #{emp.sex.code},
+            phonenum =#{emp.phonenum},
+            temp =#{emp.temp},
+            risk =#{emp.risk},
+            health = #{emp.health},
+            createTime = #{emp.createTime},
+            depart =#{emp.depart},
+            content =#{emp.content}
+        </set>
+        where
+            id = #{emp.id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="BaseTable"/>
+        where
+            id = #{l}
+    </delete>
+
+    <select id="selectPage" resultMap="BaseResult">
+        select
+            <include refid="BaseColumn"/>
+        from
+            <include refid="BaseTable"/>
+    </select>
+    <select id="findAll" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="BaseTable"/>
+    </select>
+    <select id="selectById" resultMap="BaseResult">
+        select
+            <include refid="BaseColumn"/>
+        from
+            <include refid="BaseTable"/>
+        where
+            id = #{id}
+    </select>
+    <select id="selectList" resultMap="BaseResult">
+        select
+            <include refid="BaseColumn"/>
+        from
+            <include refid="BaseTable"/>
+        where
+            <if test="key == 'name'">name</if>
+            <if test="key == 'health'">health</if>
+            <if test="key == 'createTime'">createTime</if>
+        like '%${text}%'
+    </select>
+</mapper>
