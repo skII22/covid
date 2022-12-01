@@ -22,7 +22,7 @@ target/
 rebel.xml
 mvnw.*
 mvnw
-.mvn/
+.mvn
 
 
 ### NetBeans ###
